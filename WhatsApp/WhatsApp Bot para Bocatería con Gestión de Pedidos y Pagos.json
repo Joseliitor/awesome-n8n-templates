@@ -1,0 +1,331 @@
+{
+  "id": "BocateriaWhatsAppBot01",
+  "meta": {
+    "instanceId": "bocateria-whatsapp-bot-v1-n8n-template",
+    "templateCredsSetupCompleted": true
+  },
+  "name": "WhatsApp Bot para Bocatería con Gestión de Pedidos y Pagos",
+  "tags": [],
+  "nodes": [
+    {
+      "id": "wa-trigger-01",
+      "name": "WhatsApp Trigger",
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "position": [540, 300],
+      "webhookId": "bocateria-webhook-trigger-001",
+      "parameters": {
+        "updates": ["messages"]
+      },
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "YOUR_WHATSAPP_TRIGGER_CREDENTIAL_ID",
+          "name": "WhatsApp OAuth account"
+        }
+      },
+      "typeVersion": 1
+    },
+    {
+      "id": "switch-msg-type-01",
+      "name": "Filtrar Tipo de Mensaje",
+      "type": "n8n-nodes-base.switch",
+      "position": [760, 300],
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "outputKey": "Texto",
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.messages[0].type }}",
+                    "rightValue": "text"
+                  }
+                ]
+              },
+              "renameOutput": true
+            },
+            {
+              "outputKey": "No Soportado",
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEquals"
+                    },
+                    "leftValue": "={{ $json.messages[0].type }}",
+                    "rightValue": "text"
+                  }
+                ]
+              },
+              "renameOutput": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "typeVersion": 3.2
+    },
+    {
+      "id": "reply-non-text-01",
+      "name": "Responder Mensaje No Soportado",
+      "type": "n8n-nodes-base.whatsApp",
+      "position": [980, 460],
+      "parameters": {
+        "textBody": "¡Hola! 🥖 Soy el asistente de *La Bocatería Express*.\n\nActualmente solo puedo procesar mensajes de texto. Por favor, escríbeme tu consulta o pedido en texto. ¡Gracias! 😊",
+        "operation": "send",
+        "phoneNumberId": "={{ $('WhatsApp Trigger').item.json.metadata.phone_number_id }}",
+        "requestOptions": {},
+        "additionalFields": {
+          "previewUrl": false
+        },
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}"
+      },
+      "credentials": {
+        "whatsAppApi": {
+          "id": "YOUR_WHATSAPP_API_CREDENTIAL_ID",
+          "name": "WhatsApp account"
+        }
+      },
+      "typeVersion": 1
+    },
+    {
+      "id": "ai-agent-bocateria-01",
+      "name": "Agente Bocatería IA",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [980, 300],
+      "parameters": {
+        "text": "={{ $json.messages[0].text.body }}",
+        "agent": "conversationalAgent",
+        "options": {
+          "systemMessage": "Eres el asistente virtual de *La Bocatería Express*, una bocatería artesanal especializada en bocadillos frescos y de calidad. Tu misión es atender a los clientes con amabilidad, gestionar sus pedidos de forma eficiente e informar sobre los métodos de pago disponibles.\n\n## 📍 INFORMACIÓN DEL NEGOCIO\n- **Nombre**: La Bocatería Express\n- **Horario**: Lunes a Viernes 8:00 - 20:00 | Sábados 9:00 - 18:00 | Domingos: CERRADO\n- **Teléfono**: +34 600 123 456\n- **Dirección**: Calle Mayor 15, Madrid 28013\n- **Email**: pedidos@labocateriaexpress.es\n- **Delivery**: Disponible en radio de 5 km (pedido mínimo 15 €, tarifa envío 2,50 €)\n- **Recogida en local**: Disponible sin coste adicional\n\n---\n\n## 🥖 MENÚ COMPLETO\n\n### BOCADILLOS CLÁSICOS\n| Producto | Precio |\n|---|---|\n| Bocadillo de Jamón Serrano | 4,50 € |\n| Bocadillo de Tortilla Española | 4,00 € |\n| Bocadillo de Queso Manchego | 4,00 € |\n| Bocadillo de Chorizo | 4,50 € |\n| Bocadillo Mixto (jamón + queso) | 5,00 € |\n| Bocadillo de Lomo a la Plancha | 5,50 € |\n| Bocadillo de Salchichón | 4,50 € |\n| Bocadillo de Calamares | 5,50 € |\n\n### BOCADILLOS ESPECIALES\n| Producto | Precio |\n|---|---|\n| Bocadillo Club (pollo, bacon, lechuga, tomate, mayonesa) | 7,00 € |\n| Bocadillo Veggie (hummus, aguacate, tomate, pepino, lechuga) | 6,50 € |\n| Bocadillo Mediterráneo (atún, aceitunas, pimiento rojo, cebolla) | 6,00 € |\n| Bocadillo Ibérico (jamón ibérico, queso manchego curado) | 9,00 € |\n| Bocadillo de Pollo a la Plancha con Alioli | 6,50 € |\n| Bocadillo de Pavo Ahumado con Aguacate | 6,50 € |\n| Bocadillo de Salmón Ahumado | 7,50 € |\n\n### COMPLEMENTOS\n| Producto | Precio |\n|---|---|\n| Patatas fritas pequeñas | 2,00 € |\n| Patatas fritas medianas | 2,50 € |\n| Patatas fritas grandes | 3,00 € |\n| Ensalada mixta pequeña | 3,50 € |\n| Aceitunas | 1,50 € |\n\n### BEBIDAS\n| Producto | Precio |\n|---|---|\n| Agua mineral (500 ml) | 1,00 € |\n| Refresco lata (Coca-Cola, Fanta, Sprite) | 1,50 € |\n| Zumo natural (naranja o manzana) | 2,50 € |\n| Cerveza (33 cl) | 2,00 € |\n| Café solo | 1,20 € |\n| Café con leche | 1,50 € |\n\n### COMBOS (Bocadillo + Bebida + Patatas pequeñas)\n| Combo | Precio |\n|---|---|\n| Combo Clásico (con bocadillo clásico) | 7,50 € |\n| Combo Especial (con bocadillo especial) | 10,50 € |\n\n> 🎉 **OFERTA**: Pedidos de 5 bocadillos o más → 10% de descuento automático.\n\n---\n\n## 🛒 PROCESO DE PEDIDO\n\nSigue este flujo cuando el cliente quiera pedir:\n\n1. **Saludo y bienvenida**: Si es el primer mensaje, saluda con entusiasmo y presenta el negocio.\n2. **Toma del pedido**: Escucha qué desea el cliente y confirma cada ítem con precio.\n3. **Resumen del pedido**: Muestra la lista completa de productos y el total (aplica descuento si corresponde).\n4. **Modalidad de entrega**: Pregunta si recoge en local o quiere envío a domicilio.\n   - Si es domicilio: solicita la dirección completa y verifica que esté en el radio de 5 km.\n5. **Número de pedido**: Genera un número de pedido único con el formato *BOC-XXXX* (usa un número de 4 dígitos aleatorio).\n6. **Método de pago**: Informa los métodos disponibles y espera confirmación.\n7. **Confirmación final**: Confirma el pedido con todos los datos y el tiempo estimado.\n\n---\n\n## 💳 MÉTODOS DE PAGO\n\n- 💳 **Tarjeta de crédito/débito**: En local o mediante link de pago (se genera al confirmar el pedido online).\n- 💵 **Efectivo**: Solo en local o pago al repartidor.\n- 📱 **Bizum**: Enviar al número **600 123 456** indicando como concepto el número de pedido (ej. BOC-4521).\n- 🔗 **Link de pago seguro**: Disponible para pedidos online. Se envía automáticamente al confirmar el pedido a domicilio.\n\n**Instrucciones para pago por Bizum o transferencia**:\n> Una vez realizado el pago, envía el comprobante por este chat para confirmar tu pedido. El pedido se prepara al recibir la confirmación del pago.\n\n---\n\n## ⏱️ TIEMPOS DE PREPARACIÓN\n\n- **Recogida en local**: 10-15 minutos\n- **Entrega a domicilio**: 30-45 minutos\n\n---\n\n## ℹ️ PREGUNTAS FRECUENTES\n\n**¿Tienen opciones sin gluten?**\nSí, podemos preparar cualquier bocadillo en pan sin gluten con un suplemento de 1,00 €. Indícalo al hacer el pedido.\n\n**¿Tienen opciones vegetarianas/veganas?**\nSí. El Bocadillo Veggie es 100% vegano. También podemos adaptar otros bocadillos. Consúltanos.\n\n**¿Puedo modificar los ingredientes?**\nPor supuesto. Indícanos qué ingrediente quieres quitar o añadir y te informamos del precio si hay suplemento.\n\n**¿Hacen pedidos para empresas o grupos?**\nSí, para pedidos corporativos de más de 20 unidades ofrecemos precios especiales. Contacta a pedidos@labocateriaexpress.es.\n\n---\n\n## 📝 INSTRUCCIONES PARA EL ASISTENTE\n\n- Responde SIEMPRE en el idioma del cliente (español por defecto).\n- Sé amable, profesional y resolutivo. Usa emojis con moderación para hacer la conversación más amigable.\n- Nunca inventes precios ni productos que no estén en el menú.\n- Si el cliente pide algo que no está en el menú, explícalo con disculpas y ofrece la alternativa más cercana.\n- Para cualquier consulta fuera de tu alcance, indica que pueden llamar al +34 600 123 456 en horario de apertura.\n- Mantén el contexto completo de la conversación para gestionar modificaciones o consultas sobre pedidos previos.\n- Al generar el número de pedido, usa el formato BOC-XXXX con un número de 4 dígitos (ej: BOC-2847).\n- Cuando confirmes un pedido a domicilio, incluye siempre el tiempo estimado de entrega.\n- Si detectas que el cliente ha enviado un comprobante de pago (texto describiendo que pagó), confirma la recepción y di que el pedido está en preparación."
+        },
+        "promptType": "define"
+      },
+      "typeVersion": 1.7
+    },
+    {
+      "id": "openai-model-01",
+      "name": "OpenAI GPT-4o",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [980, 480],
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o"
+        },
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "credentials": {
+        "openAiApi": {
+          "id": "YOUR_OPENAI_CREDENTIAL_ID",
+          "name": "OpenAi account"
+        }
+      },
+      "typeVersion": 1.2
+    },
+    {
+      "id": "memory-buffer-01",
+      "name": "Memoria de Conversación",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "position": [1120, 480],
+      "parameters": {
+        "sessionKey": "=bocateria-{{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+        "sessionIdType": "customKey",
+        "contextWindowLength": 20
+      },
+      "typeVersion": 1.3
+    },
+    {
+      "id": "reply-user-01",
+      "name": "Responder al Cliente",
+      "type": "n8n-nodes-base.whatsApp",
+      "position": [1240, 300],
+      "parameters": {
+        "textBody": "={{ $json.output }}",
+        "operation": "send",
+        "phoneNumberId": "={{ $('WhatsApp Trigger').item.json.metadata.phone_number_id }}",
+        "requestOptions": {},
+        "additionalFields": {
+          "previewUrl": false
+        },
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}"
+      },
+      "credentials": {
+        "whatsAppApi": {
+          "id": "YOUR_WHATSAPP_API_CREDENTIAL_ID",
+          "name": "WhatsApp account"
+        }
+      },
+      "typeVersion": 1
+    },
+    {
+      "id": "sticky-intro-01",
+      "name": "Sticky Note - Intro",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [140, 80],
+      "parameters": {
+        "width": 340,
+        "height": 580,
+        "content": "# 🥖 WhatsApp Bot para Bocatería\n\n## ¿Qué hace este workflow?\n\nEste bot de WhatsApp gestiona de forma autónoma:\n\n✅ **Atención al cliente**: Responde preguntas sobre el menú, horarios, ubicación y opciones de personalización.\n\n✅ **Toma de pedidos**: Guía al cliente paso a paso: selección de productos → resumen y total → modalidad de entrega → confirmación.\n\n✅ **Gestión de pagos**: Informa sobre todos los métodos de pago disponibles (Bizum, tarjeta, efectivo, link de pago) y guía al cliente en el proceso.\n\n✅ **Memoria de conversación**: Recuerda el contexto de cada cliente durante la sesión para gestionar modificaciones y consultas.\n\n## 🚀 Pasos para configurar\n\n1. Conecta tu cuenta de **WhatsApp Business API** (Meta for Developers)\n2. Añade tu **API Key de OpenAI**\n3. Actualiza el **Phone Number ID** de WhatsApp\n4. (Opcional) Integra Google Sheets para guardar pedidos\n5. (Opcional) Añade Stripe para generar links de pago\n6. **Activa el workflow**\n\n## 📋 Requisitos\n- Cuenta WhatsApp Business API (Meta)\n- API Key de OpenAI (GPT-4o recomendado)\n- n8n v1.0 o superior"
+      },
+      "typeVersion": 1
+    },
+    {
+      "id": "sticky-step1-01",
+      "name": "Sticky Note - Paso 1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [500, 80],
+      "parameters": {
+        "color": 7,
+        "width": 340,
+        "height": 180,
+        "content": "## 📲 PASO 1 - WhatsApp Trigger\n\nRecibe los mensajes entrantes de WhatsApp Business.\n\n**Configuración requerida:**\n- Conecta tu cuenta de WhatsApp OAuth en las credenciales\n- Activa el webhook en Meta for Developers\n- Asegúrate de que el workflow esté activo"
+      },
+      "typeVersion": 1
+    },
+    {
+      "id": "sticky-step2-01",
+      "name": "Sticky Note - Paso 2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [720, 80],
+      "parameters": {
+        "color": 7,
+        "width": 340,
+        "height": 180,
+        "content": "## 🔀 PASO 2 - Filtrar Mensajes\n\nFiltra los mensajes según su tipo:\n\n- **Texto** → Pasa al Agente IA para procesarlo\n- **Otro tipo** (imagen, audio, documento…) → Responde con un mensaje informando que solo se aceptan textos"
+      },
+      "typeVersion": 1
+    },
+    {
+      "id": "sticky-step3-01",
+      "name": "Sticky Note - Paso 3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [940, 80],
+      "parameters": {
+        "color": 7,
+        "width": 340,
+        "height": 180,
+        "content": "## 🤖 PASO 3 - Agente IA Bocatería\n\nAgente conversacional con contexto completo del negocio:\n\n- **Menú completo** con precios actualizados\n- **Lógica de pedidos** paso a paso\n- **Métodos de pago** disponibles\n- **Preguntas frecuentes** respondidas automáticamente\n- **Memoria por sesión** de cliente (20 mensajes)"
+      },
+      "typeVersion": 1
+    },
+    {
+      "id": "sticky-step4-01",
+      "name": "Sticky Note - Paso 4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [1200, 80],
+      "parameters": {
+        "color": 7,
+        "width": 340,
+        "height": 180,
+        "content": "## 📤 PASO 4 - Responder al Cliente\n\nEnvía la respuesta generada por el Agente IA al cliente por WhatsApp.\n\n**Personalización:**\n- Reemplaza `YOUR_WHATSAPP_API_CREDENTIAL_ID` con tu credencial\n- El Phone Number ID se obtiene automáticamente del trigger\n- El número destino es el número del cliente que escribió"
+      },
+      "typeVersion": 1
+    },
+    {
+      "id": "sticky-payments-01",
+      "name": "Sticky Note - Pagos y Extensiones",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [140, 560],
+      "parameters": {
+        "color": 5,
+        "width": 1400,
+        "height": 220,
+        "content": "## 💳 EXTENSIONES OPCIONALES DE PAGO Y GESTIÓN DE PEDIDOS\n\nEste workflow puede ampliarse con las siguientes integraciones adicionales (no incluidas por defecto):\n\n| Extensión | Descripción | Nodo n8n |\n|---|---|---|\n| **Google Sheets** | Guarda cada pedido confirmado en una hoja de cálculo para seguimiento | `Google Sheets` |\n| **Stripe** | Genera un link de pago seguro al confirmar un pedido a domicilio | `Stripe` o `HTTP Request` |\n| **Airtable** | Base de datos de pedidos con estados (pendiente, en preparación, entregado) | `Airtable` |\n| **Gmail/Email** | Notifica al equipo de cocina por email cuando llega un pedido nuevo | `Gmail` |\n| **Telegram** | Reenvía los pedidos a un grupo de Telegram del equipo | `Telegram` |\n\n**Para añadir pagos con Stripe**: Conecta un nodo `HTTP Request` al Agente IA como herramienta, que llame a la API de Stripe `POST /v1/payment_links` con los artículos del pedido y devuelva el link al cliente."
+      },
+      "typeVersion": 1
+    }
+  ],
+  "connections": {
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "Filtrar Tipo de Mensaje",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtrar Tipo de Mensaje": {
+      "main": [
+        [
+          {
+            "node": "Agente Bocatería IA",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder Mensaje No Soportado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente Bocatería IA": {
+      "main": [
+        [
+          {
+            "node": "Responder al Cliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI GPT-4o": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agente Bocatería IA",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memoria de Conversación": {
+      "ai_memory": [
+        [
+          {
+            "node": "Agente Bocatería IA",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "bocateria-whatsapp-bot-v1"
+}
