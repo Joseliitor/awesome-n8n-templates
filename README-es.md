@@ -326,7 +326,7 @@ Esta es la categoria mas grande con 17 plantillas de IA y LLM para n8n. Las plan
 
 ### Como creo chatbots de WhatsApp con n8n?
 
-Esta seccion incluye 4 plantillas de automatizacion de WhatsApp para n8n. Automatiza la preparacion de reuniones de ventas con IA y Apify, construye tu primer chatbot de WhatsApp, crea un chatbot RAG empresarial completo potenciado por OpenAI, o configura respuestas profesionales a mensajes con IA. Ideal para flujos de trabajo de atencion al cliente, ventas y comunicacion empresarial.
+Esta seccion incluye 5 plantillas de automatizacion de WhatsApp para n8n. Automatiza la preparacion de reuniones de ventas con IA y Apify, construye tu primer chatbot de WhatsApp, crea un chatbot RAG empresarial completo potenciado por OpenAI, configura respuestas profesionales a mensajes con IA, o despliega un bot completo de gestion de pedidos y pagos para una bocateria. Ideal para flujos de trabajo de atencion al cliente, ventas y comunicacion empresarial.
 
 | Titulo | Descripcion | Departamento | Enlace |
 |--------|-------------|--------------|--------|
@@ -334,6 +334,7 @@ Esta seccion incluye 4 plantillas de automatizacion de WhatsApp para n8n. Automa
 | Building Your First WhatsApp Chatbot | Este flujo te guia en la construccion de tu primer chatbot de WhatsApp. | Atencion al Cliente/Desarrollo | [Enlace a la Plantilla](./WhatsApp/Building%20Your%20First%20WhatsApp%20Chatbot.json) |
 | Complete business WhatsApp AI-Powered RAG Chatbot using OpenAI | Este flujo construye un chatbot RAG completo para empresas en WhatsApp, potenciado por IA con OpenAI. | Atencion al Cliente/IA/Desarrollo | [Enlace a la Plantilla](./WhatsApp/Complete%20business%20WhatsApp%20AI-Powered%20RAG%20Chatbot%20using%20OpenAI.json) |
 | Respond to WhatsApp Messages with AI Like a Pro! | Este flujo permite respuestas profesionales potenciadas por IA a los mensajes de WhatsApp. | Atencion al Cliente/IA/Comunicacion | [Enlace a la Plantilla](./WhatsApp/Respond%20to%20WhatsApp%20Messages%20with%20AI%20Like%20a%20Pro!.json) |
+| WhatsApp Bot para Bocatería con Gestión de Pedidos y Pagos | Este flujo despliega un bot de WhatsApp con IA completo para una bocateria, con menu detallado, gestion de pedidos paso a paso, orientacion sobre metodos de pago (Bizum, tarjeta, efectivo, link de pago), memoria de sesion por cliente y extensiones opcionales para Google Sheets, Stripe y notificaciones por correo. | Atencion al Cliente/Restauracion/IA | [Enlace a la Plantilla](./WhatsApp/WhatsApp%20Bot%20para%20Bocater%C3%ADa%20con%20Gesti%C3%B3n%20de%20Pedidos%20y%20Pagos.json) |
 
 > 🚀 **Automatiza cualquier flujo de trabajo.** [Crea tu cuenta n8n gratis y empieza a construir →](https://n8n.partnerlinks.io/h1pwwf5m4toe)
 

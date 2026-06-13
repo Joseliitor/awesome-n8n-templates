@@ -332,7 +332,7 @@ This is the largest category with 17 AI and LLM templates for n8n. Templates inc
 
 ### How do I build WhatsApp chatbots with n8n?
 
-This section includes 4 WhatsApp automation templates for n8n. Automate sales meeting preparation with AI and Apify, build your first WhatsApp chatbot, create a full business RAG chatbot powered by OpenAI, or set up professional AI-powered message responses. Ideal for customer service, sales, and business communication workflows.
+This section includes 5 WhatsApp automation templates for n8n. Automate sales meeting preparation with AI and Apify, build your first WhatsApp chatbot, create a full business RAG chatbot powered by OpenAI, set up professional AI-powered message responses, or deploy a complete AI-powered order and payment management bot for a food business. Ideal for customer service, sales, and business communication workflows.
 
 | Title | Description | Department | Link |
 |---|---|---|---|
@@ -340,6 +340,7 @@ This section includes 4 WhatsApp automation templates for n8n. Automate sales me
 | Building Your First WhatsApp Chatbot | This workflow guides you through building your first WhatsApp chatbot. | Customer Service/Development | [Link to Template](./WhatsApp/Building%20Your%20First%20WhatsApp%20Chatbot.json) |
 | Complete business WhatsApp AI-Powered RAG Chatbot using OpenAI | This workflow builds a complete business WhatsApp AI-powered RAG chatbot using OpenAI. | Customer Service/AI/Development | [Link to Template](./WhatsApp/Complete%20business%20WhatsApp%20AI-Powered%20RAG%20Chatbot%20using%20OpenAI.json) |
 | Respond to WhatsApp Messages with AI Like a Pro! | This workflow enables professional AI-powered responses to WhatsApp messages. | Customer Service/AI/Communication | [Link to Template](./WhatsApp/Respond%20to%20WhatsApp%20Messages%20with%20AI%20Like%20a%20Pro!.json) |
+| WhatsApp Bot para Bocatería con Gestión de Pedidos y Pagos | This workflow deploys a fully-featured AI WhatsApp bot for a sandwich shop (bocatería) with the complete menu, step-by-step order management, payment method guidance (Bizum, card, cash, payment link), session memory per customer, and extensibility hooks for Google Sheets, Stripe, and email notifications. | Customer Service/Food & Beverage/AI | [Link to Template](./WhatsApp/WhatsApp%20Bot%20para%20Bocater%C3%ADa%20con%20Gesti%C3%B3n%20de%20Pedidos%20y%20Pagos.json) |
 
 > 🚀 **Automate any workflow.** [Create your free n8n account and start building →](https://n8n.partnerlinks.io/h1pwwf5m4toe)
 
